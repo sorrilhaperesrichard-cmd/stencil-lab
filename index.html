@@ -104,6 +104,15 @@ input[type=range]{width:100%;accent-color:var(--violet);margin:0;height:22px}
 .modal{position:fixed;inset:0;background:rgba(10,6,18,.7);z-index:40;display:grid;place-items:center;
   padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .modal .card{background:var(--surface);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px;max-width:min(560px,100%);max-height:100%;overflow:auto}
+.ai{background:var(--violet-soft)}
+.ai .steps{margin:0;padding-left:18px;color:var(--ink);font-size:13px;display:flex;flex-direction:column;gap:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:500 13px/1 var(--body);border:1px solid var(--rule);background:var(--surface);color:var(--ink);padding:9px 12px;border-radius:999px;cursor:pointer;min-height:38px}
+.chip[aria-pressed="true"]{background:var(--violet);border-color:var(--violet);color:var(--on-violet)}
+.ai textarea{font:14px/1.4 var(--body);width:100%;min-height:64px;border:1px solid var(--rule);border-radius:10px;padding:10px;background:var(--surface);color:var(--ink);resize:vertical}
+.ai .btn{justify-content:center;text-decoration:none}
+.ai details summary{cursor:pointer;color:var(--violet);font-weight:600;font-size:13px}
+.ai pre{white-space:pre-wrap;font:12px/1.45 var(--mono);background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:10px;margin:8px 0 0;user-select:text;-webkit-user-select:text}
 .modal img{background:#fff;max-height:60vh;width:auto;margin:0 auto;display:block}
 @media (pointer:coarse){
   .btn{min-height:46px;padding:12px 18px;font-size:15px}
@@ -174,6 +183,21 @@ input[type=range]{width:100%;accent-color:var(--violet);margin:0;height:22px}
         <h2>Saída</h2>
         <div class="seg full" id="inkSeg" role="group" aria-label="Cor da tinta"></div>
         <label class="switch"><input type="checkbox" id="mirror"><span class="sw"></span>Espelhar (transfer)</label>
+      </div>
+      <div class="group ai" id="gAI">
+        <h2>IA · último recurso</h2>
+        <p class="hint">Para foto borrada, escura ou apagada. A IA redesenha o desenho com linhas limpas e reconstrói o que a foto não mostra. Usa o Gemini do Google, grátis com limite diário.</p>
+        <div class="chips" id="aiChips"></div>
+        <textarea id="aiExtra" placeholder="Algo mais? Ex.: manter a cauda curvada para a esquerda"></textarea>
+        <ol class="steps">
+          <li>Toque em <b>Copiar pedido e abrir Gemini</b></li>
+          <li>No Gemini, anexe a foto e cole o pedido</li>
+          <li>Salve a imagem que ele gerar</li>
+          <li>Volte aqui e toque em <b>Trazer resultado da IA</b></li>
+        </ol>
+        <a class="btn primary" id="aiGo" href="https://gemini.google.com/app" target="_blank" rel="noopener">Copiar pedido e abrir Gemini</a>
+        <label class="btn filebtn" style="justify-content:center">Trazer resultado da IA<input type="file" id="aiFile" accept="image/*" aria-label="Trazer resultado da IA"></label>
+        <details><summary>Ver o pedido</summary><pre id="aiPrompt"></pre></details>
       </div>
     </aside>
   </main>
@@ -476,6 +500,45 @@ $('#save').addEventListener('click',async()=>{
 });
 $('#modalClose').addEventListener('click',()=>$('#modal').hidden=true);
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')$('#modal').hidden=true;});
+
+
+/* ---------- IA (último recurso) ---------- */
+const AI_CHIPS=[
+ ['escamas','Escamas',"Desenhe o contorno de cada escama individualmente, em padrão sobreposto e regular que acompanha a curvatura do corpo e diminui de tamanho nas extremidades, inclusive nas partes onde a foto não mostra bem."],
+ ['cabelo','Cabelo',"Separe o cabelo em mechas com linhas fluidas e contínuas, sem riscos soltos."],
+ ['rosto','Rosto',"Rosto com traços nítidos e anatomicamente corretos: olhos, sobrancelhas, nariz, boca e contorno bem definidos, sem mudar a expressão."],
+ ['maos','Mãos',"Mãos e dedos com anatomia correta e contornos claros."],
+ ['ornamentos','Ornamentos',"Ornamentos, joias e padrões com linhas precisas e simétricas."],
+ ['agua','Água / fundo',"Ondas, bolhas e elementos de fundo simplificados em linhas limpas."],
+ ['contorno','Só contorno',"Use apenas linhas de contorno, sem nenhuma hachura ou preenchimento."]
+];
+const aiSel=new Set(['escamas','contorno']);
+const aiBox=document.getElementById('aiChips');
+for(const [k,l] of AI_CHIPS){const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=l;b.dataset.k=k;
+  b.addEventListener('click',()=>{aiSel.has(k)?aiSel.delete(k):aiSel.add(k);aiSync();});aiBox.appendChild(b);}
+function aiPrompt(){
+  const parts=["Redesenhe esta imagem como line art para stencil de tatuagem.",
+   "Fundo branco puro e apenas linhas pretas finas, limpas, contínuas e fechadas. Sem cinza, sem degradê, sem textura de foto.",
+   "Mantenha exatamente a mesma composição, pose, proporções e enquadramento da foto. Não corte a imagem e não acrescente elementos novos.",
+   "Nas áreas borradas, apagadas ou escuras, reconstrua os detalhes de forma coerente com o resto do desenho."];
+  for(const [k,,t] of AI_CHIPS)if(aiSel.has(k))parts.push(t);
+  const ex=document.getElementById('aiExtra').value.trim();if(ex)parts.push(ex);
+  parts.push("Desenho inteiro, sem moldura, sem texto, sem assinatura e sem marca d'água. Saída em alta resolução.");
+  return parts.join('\n');
+}
+function aiSync(){for(const b of aiBox.children)b.setAttribute('aria-pressed',String(aiSel.has(b.dataset.k)));document.getElementById('aiPrompt').textContent=aiPrompt();}
+document.getElementById('aiExtra').addEventListener('input',aiSync);
+aiSync();
+document.getElementById('aiGo').addEventListener('click',()=>{
+  const p=aiPrompt();
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(p).then(()=>toast('Pedido copiado. Agora anexe a foto no Gemini e cole.',5000)).catch(()=>toast('Não consegui copiar. Abra “Ver o pedido” e copie manualmente.',6000));}
+  else toast('Abra “Ver o pedido” e copie manualmente.',6000);
+});
+document.getElementById('aiFile').addEventListener('change',async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  await loadFile(f);applyPreset('fineline');S.clean=10;S.detail=60;syncUI();schedule();
+  toast('Resultado da IA carregado no modo Fine line. Ajuste o Detalhe se faltar alguma linha.',6000);
+});
 
 syncUI();
 setSource(sample(),'Exemplo',true);
