@@ -69,7 +69,7 @@ h1 span{color:var(--violet)}
 .busy{position:absolute;top:12px;right:12px;font:500 11px/1 var(--mono);letter-spacing:.06em;color:var(--muted);
   background:var(--surface);padding:6px 8px;border-radius:6px;border:1px solid var(--rule)}
 .pastebox{border:1.5px dashed var(--violet);border-radius:12px;background:var(--violet-soft);color:var(--violet);padding:14px 16px;min-height:52px;font-weight:500;caret-color:transparent;overflow:hidden;max-height:80px}
-.pastebox:empty::before{content:"Sem botão de upload? Copie a foto na galeria, toque e segure aqui e escolha Colar.";color:var(--violet)}
+.pastebox:empty::before{content:attr(data-ph);color:var(--violet)}
 .pastebox:focus{outline:2px solid var(--violet);outline-offset:2px}
 .meta{margin:0;color:var(--muted);font:12px/1.4 var(--mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 
@@ -131,73 +131,77 @@ input[type=range]{width:100%;accent-color:var(--violet);margin:0;height:22px}
   <header class="top">
     <div>
       <h1>Stencil <span>Lab</span></h1>
-      <p class="tag">Linhas principais e sombras a partir de qualquer foto.</p>
+      <p class="tag" data-i="tag"></p>
     </div>
     <div class="actions">
-      <label class="btn filebtn">Carregar foto<input type="file" id="file" accept="image/*" aria-label="Carregar foto"></label>
-      <button class="btn primary" id="save" type="button">Salvar / Enviar</button>
+      <label class="btn filebtn"><span data-i="load"></span><input type="file" id="file" accept="image/*" data-ia="load"></label>
+      <button class="btn primary" id="save" type="button" data-i="save"></button>
     </div>
   </header>
 
   <main class="work">
     <section class="stagewrap">
       <div class="viewbar">
-        <div class="seg" id="viewSeg" role="group" aria-label="Visualização"></div>
-        <span class="hint">Arraste, cole ou carregue uma foto</span>
+        <div class="seg" id="viewSeg" role="group" data-ia="view_aria"></div>
+        <span class="hint" data-i="drag_hint"></span>
       </div>
       <div class="stage" id="stage">
-        <canvas id="out" width="10" height="10" aria-label="Pré-visualização do stencil"></canvas>
-        <span class="badge" id="badge">Exemplo</span>
-        <span class="busy" id="busy" hidden>Processando…</span>
+        <canvas id="out" width="10" height="10" data-ia="canvas_aria"></canvas>
+        <span class="badge" id="badge" data-i="badge"></span>
+        <span class="busy" id="busy" hidden data-i="busy"></span>
       </div>
-      <div class="pastebox" id="pastebox" contenteditable="true" role="textbox" aria-label="Colar foto aqui" inputmode="none"></div>
+      <div class="pastebox" id="pastebox" contenteditable="true" role="textbox" data-ia="paste_aria" inputmode="none"></div>
       <p class="meta" id="meta"></p>
     </section>
 
     <aside class="panel">
       <div class="group">
-        <h2>Estilo</h2>
-        <div class="seg full" id="presetSeg" role="group" aria-label="Estilo pronto"></div>
+        <h2 data-i="h_style"></h2>
+        <div class="seg full" id="presetSeg" role="group" data-ia="preset_aria"></div>
         <p class="hint" id="presetHint"></p>
       </div>
       <div class="group" id="gLines">
-        <div class="ghead"><h2>Linhas</h2>
+        <div class="ghead"><h2 data-i="h_lines"></h2>
           <label class="switch"><input type="checkbox" id="linesOn"><span class="sw"></span></label></div>
         <div class="rows" id="rowsLines"></div>
       </div>
       <div class="group" id="gShade">
-        <div class="ghead"><h2>Sombras</h2>
+        <div class="ghead"><h2 data-i="h_shade"></h2>
           <label class="switch"><input type="checkbox" id="shadeOn"><span class="sw"></span></label></div>
         <div class="rows">
-          <div class="seg full" id="styleSeg" role="group" aria-label="Estilo da sombra"></div>
+          <div class="seg full" id="styleSeg" role="group" data-ia="shade_aria"></div>
           <div class="rows" id="rowsShade"></div>
         </div>
       </div>
       <div class="group">
-        <h2>Foto</h2>
+        <h2 data-i="h_photo"></h2>
         <div class="rows" id="rowsPhoto"></div>
-        <div class="row"><span class="lab"><label>Resolução</label></span>
-          <div class="seg full" id="resSeg" role="group" aria-label="Resolução"></div></div>
+        <div class="row"><span class="lab"><label data-i="res"></label></span>
+          <div class="seg full" id="resSeg" role="group" data-ia="res"></div></div>
       </div>
       <div class="group">
-        <h2>Saída</h2>
-        <div class="seg full" id="inkSeg" role="group" aria-label="Cor da tinta"></div>
-        <label class="switch"><input type="checkbox" id="mirror"><span class="sw"></span>Espelhar (transfer)</label>
+        <h2 data-i="h_out"></h2>
+        <div class="seg full" id="inkSeg" role="group" data-ia="ink_aria"></div>
+        <label class="switch"><input type="checkbox" id="mirror"><span class="sw"></span><span data-i="mirror"></span></label>
+      </div>
+      <div class="group">
+        <h2 data-i="h_lang"></h2>
+        <div class="seg full" id="langSeg" role="group" data-ia="h_lang"><button type="button" data-l="pt">Português</button><button type="button" data-l="es">Español</button><button type="button" data-l="en">English</button></div>
       </div>
       <div class="group ai" id="gAI">
-        <h2>IA · último recurso</h2>
-        <p class="hint">Para foto borrada, escura ou apagada. A IA redesenha o desenho com linhas limpas e reconstrói o que a foto não mostra. Usa o Gemini do Google, grátis com limite diário.</p>
+        <h2 data-i="h_ai"></h2>
+        <p class="hint" data-i="ai_hint"></p>
         <div class="chips" id="aiChips"></div>
-        <textarea id="aiExtra" placeholder="Algo mais? Ex.: manter a cauda curvada para a esquerda"></textarea>
+        <textarea id="aiExtra" data-iph="ai_extra_ph"></textarea>
         <ol class="steps">
-          <li>Toque em <b>Copiar pedido e abrir Gemini</b></li>
-          <li>No Gemini, anexe a foto e cole o pedido</li>
-          <li>Salve a imagem que ele gerar</li>
-          <li>Volte aqui e toque em <b>Trazer resultado da IA</b></li>
+          <li data-i="ai_s1"></li>
+          <li data-i="ai_s2"></li>
+          <li data-i="ai_s3"></li>
+          <li data-i="ai_s4"></li>
         </ol>
-        <a class="btn primary" id="aiGo" href="https://gemini.google.com/app" target="_blank" rel="noopener">Copiar pedido e abrir Gemini</a>
-        <label class="btn filebtn" style="justify-content:center">Trazer resultado da IA<input type="file" id="aiFile" accept="image/*" aria-label="Trazer resultado da IA"></label>
-        <details><summary>Ver o pedido</summary><pre id="aiPrompt"></pre></details>
+        <a class="btn primary" id="aiGo" href="https://gemini.google.com/app" target="_blank" rel="noopener" data-i="ai_go"></a>
+        <label class="btn filebtn" style="justify-content:center"><span data-i="ai_back"></span><input type="file" id="aiFile" accept="image/*" data-ia="ai_back"></label>
+        <details><summary data-i="ai_see"></summary><pre id="aiPrompt"></pre></details>
       </div>
     </aside>
   </main>
@@ -205,46 +209,58 @@ input[type=range]{width:100%;accent-color:var(--violet);margin:0;height:22px}
 <div class="toast" id="toast" hidden></div>
 <div class="modal" id="modal" hidden>
   <div class="card">
-    <strong>Salvar stencil</strong>
-    <p class="hint">Toque e segure a imagem e escolha “Salvar em Fotos” ou “Compartilhar”.</p>
-    <img id="modalImg" alt="Stencil pronto para salvar">
-    <button class="btn" id="modalClose" type="button">Fechar</button>
+    <strong data-i="m_title"></strong>
+    <p class="hint" data-i="m_hint"></p>
+    <img id="modalImg" data-ialt="m_alt">
+    <button class="btn" id="modalClose" type="button" data-i="close"></button>
   </div>
 </div>
 
 <script>
 (()=>{
+const I18N={"pt": {"tag": "Linhas principais e sombras a partir de qualquer foto.", "load": "Carregar foto", "save": "Salvar / Enviar", "view_aria": "Visualização", "drag_hint": "Arraste, cole ou carregue uma foto", "canvas_aria": "Pré-visualização do stencil", "badge": "Exemplo", "busy": "Processando…", "paste_aria": "Colar foto aqui", "paste_ph": "Sem botão de upload? Copie a foto na galeria, toque e segure aqui e escolha Colar.", "h_style": "Estilo", "preset_aria": "Estilo pronto", "h_lines": "Linhas", "h_shade": "Sombras", "shade_aria": "Estilo da sombra", "h_photo": "Foto", "res": "Resolução", "h_out": "Saída", "ink_aria": "Cor da tinta", "mirror": "Espelhar (transfer)", "h_lang": "Idioma", "h_ai": "IA · último recurso", "ai_hint": "Para foto borrada, escura ou apagada. A IA redesenha o desenho com linhas limpas e reconstrói o que a foto não mostra. Usa o Gemini do Google, grátis com limite diário.", "ai_extra_ph": "Algo mais? Ex.: manter a cauda curvada para a esquerda", "ai_go": "Copiar pedido e abrir Gemini", "ai_back": "Trazer resultado da IA", "ai_s1": "Toque em <b>Copiar pedido e abrir Gemini</b>", "ai_s2": "No Gemini, anexe a foto e cole o pedido", "ai_s3": "Salve a imagem que ele gerar", "ai_s4": "Volte aqui e toque em <b>Trazer resultado da IA</b>", "ai_see": "Ver o pedido", "m_title": "Salvar stencil", "m_hint": "Toque e segure a imagem e escolha “Salvar em Fotos” ou “Compartilhar”.", "m_alt": "Stencil pronto para salvar", "close": "Fechar", "p_realismo": "Realismo", "p_pontos": "Pontilhismo", "ph_realismo": "Contorno fino e sombra em hachura de três tons.", "ph_fineline": "Só as linhas, traço de 1 px e pouco ruído.", "ph_blackwork": "Traço grosso, sombra mais escura em preenchimento sólido.", "ph_pontos": "Sombra em pontos, mais densos onde a foto é mais escura.", "s_detail": "Detalhe", "s_lineBlur": "Suavizar foto", "s_thick": "Espessura", "s_clean": "Ignorar traços curtos", "s_tones": "Tons", "s_cutoff": "Onde começa a sombra", "s_shadeBlur": "Suavizar zonas", "s_bright": "Brilho", "s_contrast": "Contraste", "v_overlay": "Sobrepor", "st_outline": "Tracejado", "st_hatch": "Hachura", "st_dots": "Pontos", "st_solid": "Sólido", "r_fast": "Rápida", "r_high": "Alta", "r_print": "Impressão", "i_black": "Preto", "i_violet": "Violeta", "custom": "Ajustes personalizados.", "photo": "Foto", "pasted": "Foto colada", "t_notimg": "Esse arquivo não é uma imagem. Use JPG, PNG ou WEBP.", "t_opening": "Abrindo foto…", "t_loaded": "Foto carregada.", "t_heic": "Fotos HEIC não abrem aqui. No iPhone, use Câmera › Formatos › Mais compatível, ou envie a foto como JPG.", "t_cantopen": "Não consegui abrir essa imagem. Exporte como JPG e tente de novo.", "t_noclip": "Nenhuma imagem na área de transferência. Copie a foto primeiro.", "t_cantpaste": "Não consegui ler a foto colada.", "t_procfail": "Algo falhou no processamento. Tente a resolução Rápida.", "t_copied": "Pedido copiado. Agora anexe a foto no Gemini e cole.", "t_copyfail": "Não consegui copiar. Abra “Ver o pedido” e copie manualmente.", "t_copymanual": "Abra “Ver o pedido” e copie manualmente.", "t_aiLoaded": "Resultado da IA carregado no modo Fine line. Ajuste o Detalhe se faltar alguma linha.", "meta_dpi": "cm a 300 dpi", "c_escamas": "Escamas", "c_cabelo": "Cabelo", "c_rosto": "Rosto", "c_maos": "Mãos", "c_ornamentos": "Ornamentos", "c_agua": "Água / fundo", "c_contorno": "Só contorno", "ct_escamas": "Desenhe o contorno de cada escama individualmente, em padrão sobreposto e regular que acompanha a curvatura do corpo e diminui de tamanho nas extremidades, inclusive nas partes onde a foto não mostra bem.", "ct_cabelo": "Separe o cabelo em mechas com linhas fluidas e contínuas, sem riscos soltos.", "ct_rosto": "Rosto com traços nítidos e anatomicamente corretos: olhos, sobrancelhas, nariz, boca e contorno bem definidos, sem mudar a expressão.", "ct_maos": "Mãos e dedos com anatomia correta e contornos claros.", "ct_ornamentos": "Ornamentos, joias e padrões com linhas precisas e simétricas.", "ct_agua": "Ondas, bolhas e elementos de fundo simplificados em linhas limpas.", "ct_contorno": "Use apenas linhas de contorno, sem nenhuma hachura ou preenchimento.", "pr1": "Redesenhe esta imagem como line art para stencil de tatuagem.", "pr2": "Fundo branco puro e apenas linhas pretas finas, limpas, contínuas e fechadas. Sem cinza, sem degradê, sem textura de foto.", "pr3": "Mantenha exatamente a mesma composição, pose, proporções e enquadramento da foto. Não corte a imagem e não acrescente elementos novos.", "pr4": "Nas áreas borradas, apagadas ou escuras, reconstrua os detalhes de forma coerente com o resto do desenho.", "pr5": "Desenho inteiro, sem moldura, sem texto, sem assinatura e sem marca d'água. Saída em alta resolução."}, "es": {"tag": "Líneas principales y sombras a partir de cualquier foto.", "load": "Cargar foto", "save": "Guardar / Enviar", "view_aria": "Vista", "drag_hint": "Arrastra, pega o carga una foto", "canvas_aria": "Vista previa del stencil", "badge": "Ejemplo", "busy": "Procesando…", "paste_aria": "Pegar foto aquí", "paste_ph": "¿Sin botón de carga? Copia la foto en la galería, mantén pulsado aquí y elige Pegar.", "h_style": "Estilo", "preset_aria": "Estilo predefinido", "h_lines": "Líneas", "h_shade": "Sombras", "shade_aria": "Estilo de sombra", "h_photo": "Foto", "res": "Resolución", "h_out": "Salida", "ink_aria": "Color de tinta", "mirror": "Espejar (transfer)", "h_lang": "Idioma", "h_ai": "IA · último recurso", "ai_hint": "Para fotos borrosas, oscuras o desvaídas. La IA redibuja el diseño con líneas limpias y reconstruye lo que la foto no muestra. Usa Gemini de Google, gratis con límite diario.", "ai_extra_ph": "¿Algo más? Ej.: mantener la cola curvada hacia la izquierda", "ai_go": "Copiar petición y abrir Gemini", "ai_back": "Traer resultado de la IA", "ai_s1": "Toca <b>Copiar petición y abrir Gemini</b>", "ai_s2": "En Gemini, adjunta la foto y pega la petición", "ai_s3": "Guarda la imagen que genere", "ai_s4": "Vuelve aquí y toca <b>Traer resultado de la IA</b>", "ai_see": "Ver la petición", "m_title": "Guardar stencil", "m_hint": "Mantén pulsada la imagen y elige “Guardar en Fotos” o “Compartir”.", "m_alt": "Stencil listo para guardar", "close": "Cerrar", "p_realismo": "Realismo", "p_pontos": "Puntillismo", "ph_realismo": "Contorno fino y sombra en trama de tres tonos.", "ph_fineline": "Solo líneas, trazo de 1 px y poco ruido.", "ph_blackwork": "Trazo grueso, sombra más oscura con relleno sólido.", "ph_pontos": "Sombra en puntos, más densos donde la foto es más oscura.", "s_detail": "Detalle", "s_lineBlur": "Suavizar foto", "s_thick": "Grosor", "s_clean": "Ignorar trazos cortos", "s_tones": "Tonos", "s_cutoff": "Dónde empieza la sombra", "s_shadeBlur": "Suavizar zonas", "s_bright": "Brillo", "s_contrast": "Contraste", "v_overlay": "Superponer", "st_outline": "Discontinuo", "st_hatch": "Trama", "st_dots": "Puntos", "st_solid": "Sólido", "r_fast": "Rápida", "r_high": "Alta", "r_print": "Impresión", "i_black": "Negro", "i_violet": "Violeta", "custom": "Ajustes personalizados.", "photo": "Foto", "pasted": "Foto pegada", "t_notimg": "Ese archivo no es una imagen. Usa JPG, PNG o WEBP.", "t_opening": "Abriendo foto…", "t_loaded": "Foto cargada.", "t_heic": "Las fotos HEIC no se abren aquí. En el iPhone, usa Cámara › Formatos › Más compatible, o envía la foto como JPG.", "t_cantopen": "No pude abrir esa imagen. Expórtala como JPG e inténtalo de nuevo.", "t_noclip": "No hay ninguna imagen en el portapapeles. Copia la foto primero.", "t_cantpaste": "No pude leer la foto pegada.", "t_procfail": "Algo falló en el procesamiento. Prueba la resolución Rápida.", "t_copied": "Petición copiada. Ahora adjunta la foto en Gemini y pega.", "t_copyfail": "No pude copiar. Abre “Ver la petición” y cópiala a mano.", "t_copymanual": "Abre “Ver la petición” y cópiala a mano.", "t_aiLoaded": "Resultado de la IA cargado en modo Fine line. Ajusta el Detalle si falta alguna línea.", "meta_dpi": "cm a 300 ppp", "c_escamas": "Escamas", "c_cabelo": "Cabello", "c_rosto": "Rostro", "c_maos": "Manos", "c_ornamentos": "Ornamentos", "c_agua": "Agua / fondo", "c_contorno": "Solo contorno", "ct_escamas": "Dibuja el contorno de cada escama por separado, en un patrón superpuesto y regular que sigue la curvatura del cuerpo y se hace más pequeño en los extremos, incluso en las partes donde la foto no se ve bien.", "ct_cabelo": "Separa el cabello en mechones con líneas fluidas y continuas, sin trazos sueltos.", "ct_rosto": "Rostro con rasgos nítidos y anatómicamente correctos: ojos, cejas, nariz, boca y contorno bien definidos, sin cambiar la expresión.", "ct_maos": "Manos y dedos con anatomía correcta y contornos claros.", "ct_ornamentos": "Ornamentos, joyas y patrones con líneas precisas y simétricas.", "ct_agua": "Olas, burbujas y elementos de fondo simplificados en líneas limpias.", "ct_contorno": "Usa solo líneas de contorno, sin trama ni relleno.", "pr1": "Redibuja esta imagen como line art para stencil de tatuaje.", "pr2": "Fondo blanco puro y solo líneas negras finas, limpias, continuas y cerradas. Sin grises, sin degradados, sin textura de foto.", "pr3": "Mantén exactamente la misma composición, pose, proporciones y encuadre de la foto. No recortes la imagen ni añadas elementos nuevos.", "pr4": "En las zonas borrosas, desvaídas u oscuras, reconstruye los detalles de forma coherente con el resto del dibujo.", "pr5": "Dibujo completo, sin marco, sin texto, sin firma y sin marca de agua. Salida en alta resolución."}, "en": {"tag": "Clean lines and shading from any photo.", "load": "Load photo", "save": "Save / Share", "view_aria": "View", "drag_hint": "Drag, paste or load a photo", "canvas_aria": "Stencil preview", "badge": "Sample", "busy": "Processing…", "paste_aria": "Paste photo here", "paste_ph": "No upload button? Copy the photo in your gallery, press and hold here and choose Paste.", "h_style": "Style", "preset_aria": "Preset", "h_lines": "Lines", "h_shade": "Shading", "shade_aria": "Shading style", "h_photo": "Photo", "res": "Resolution", "h_out": "Output", "ink_aria": "Ink color", "mirror": "Mirror (transfer)", "h_lang": "Language", "h_ai": "AI · last resort", "ai_hint": "For blurry, dark or faded photos. The AI redraws the design with clean lines and rebuilds what the photo doesn't show. Uses Google Gemini, free with a daily limit.", "ai_extra_ph": "Anything else? E.g. keep the tail curving to the left", "ai_go": "Copy prompt and open Gemini", "ai_back": "Bring in AI result", "ai_s1": "Tap <b>Copy prompt and open Gemini</b>", "ai_s2": "In Gemini, attach the photo and paste the prompt", "ai_s3": "Save the image it creates", "ai_s4": "Come back and tap <b>Bring in AI result</b>", "ai_see": "Show prompt", "m_title": "Save stencil", "m_hint": "Press and hold the image and choose “Save to Photos” or “Share”.", "m_alt": "Stencil ready to save", "close": "Close", "p_realismo": "Realism", "p_pontos": "Dotwork", "ph_realismo": "Fine outline and three-tone hatched shading.", "ph_fineline": "Lines only, 1 px stroke and little noise.", "ph_blackwork": "Bold stroke, darker shading with solid fill.", "ph_pontos": "Dotted shading, denser where the photo is darker.", "s_detail": "Detail", "s_lineBlur": "Smooth photo", "s_thick": "Thickness", "s_clean": "Ignore short strokes", "s_tones": "Tones", "s_cutoff": "Where shading starts", "s_shadeBlur": "Smooth zones", "s_bright": "Brightness", "s_contrast": "Contrast", "v_overlay": "Overlay", "st_outline": "Dashed", "st_hatch": "Hatching", "st_dots": "Dots", "st_solid": "Solid", "r_fast": "Fast", "r_high": "High", "r_print": "Print", "i_black": "Black", "i_violet": "Violet", "custom": "Custom settings.", "photo": "Photo", "pasted": "Pasted photo", "t_notimg": "That file isn't an image. Use JPG, PNG or WEBP.", "t_opening": "Opening photo…", "t_loaded": "Photo loaded.", "t_heic": "HEIC photos don't open here. On iPhone, use Camera › Formats › Most Compatible, or send the photo as JPG.", "t_cantopen": "Couldn't open that image. Export it as JPG and try again.", "t_noclip": "No image on the clipboard. Copy the photo first.", "t_cantpaste": "Couldn't read the pasted photo.", "t_procfail": "Processing failed. Try the Fast resolution.", "t_copied": "Prompt copied. Now attach the photo in Gemini and paste.", "t_copyfail": "Couldn't copy. Open “Show prompt” and copy it manually.", "t_copymanual": "Open “Show prompt” and copy it manually.", "t_aiLoaded": "AI result loaded in Fine line mode. Raise Detail if any line is missing.", "meta_dpi": "cm at 300 dpi", "c_escamas": "Scales", "c_cabelo": "Hair", "c_rosto": "Face", "c_maos": "Hands", "c_ornamentos": "Ornaments", "c_agua": "Water / background", "c_contorno": "Outline only", "ct_escamas": "Draw the outline of every single scale, in a regular overlapping pattern that follows the curve of the body and gets smaller toward the ends, including the areas where the photo isn't clear.", "ct_cabelo": "Split the hair into locks with flowing, continuous lines and no stray marks.", "ct_rosto": "Face with sharp, anatomically correct features: eyes, eyebrows, nose, mouth and outline clearly defined, without changing the expression.", "ct_maos": "Hands and fingers with correct anatomy and clear outlines.", "ct_ornamentos": "Ornaments, jewelry and patterns with precise, symmetrical lines.", "ct_agua": "Waves, bubbles and background elements simplified into clean lines.", "ct_contorno": "Use outline strokes only, with no hatching or fill.", "pr1": "Redraw this image as line art for a tattoo stencil.", "pr2": "Pure white background and only thin, clean, continuous, closed black lines. No grey, no gradients, no photo texture.", "pr3": "Keep exactly the same composition, pose, proportions and framing as the photo. Don't crop the image or add new elements.", "pr4": "In blurry, faded or dark areas, rebuild the details consistently with the rest of the drawing.", "pr5": "Full drawing, no frame, no text, no signature and no watermark. High-resolution output."}};
+let LANG='pt';
+try{const sv=localStorage.getItem('stencil-lab-lang');if(I18N[sv])LANG=sv;else{const n=(navigator.language||'pt').slice(0,2).toLowerCase();LANG=I18N[n]?n:'pt';}}catch(e){}
+const t=k=>I18N[LANG][k]??I18N.pt[k]??k;
+document.documentElement.lang={pt:'pt-BR',es:'es',en:'en'}[LANG];
+document.querySelectorAll('[data-i]').forEach(e=>e.innerHTML=t(e.dataset.i));
+document.querySelectorAll('[data-ia]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.ia)));
+document.querySelectorAll('[data-iph]').forEach(e=>e.placeholder=t(e.dataset.iph));
+document.querySelectorAll('[data-ialt]').forEach(e=>e.alt=t(e.dataset.ialt));
+document.getElementById('pastebox').dataset.ph=t('paste_ph');
+document.querySelectorAll('#langSeg button').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.l===LANG));
+  b.addEventListener('click',()=>{if(b.dataset.l===LANG)return;try{localStorage.setItem('stencil-lab-lang',b.dataset.l);}catch(e){}location.reload();});});
 const $=s=>document.querySelector(s);
 const S={linesOn:true,detail:50,lineBlur:1.6,thick:1.2,clean:30,
   shadeOn:true,shadeStyle:'hatch',tones:3,cutoff:55,shadeBlur:3,
   bright:0,contrast:100,res:1400,ink:'black',mirror:false,view:'stencil',preset:'realismo'};
 
 const PRESETS={
-  realismo:{name:'Realismo',hint:'Contorno fino e sombra em hachura de três tons.',v:{linesOn:true,detail:50,lineBlur:1.6,thick:1.2,clean:30,shadeOn:true,shadeStyle:'hatch',tones:3,cutoff:55,shadeBlur:3}},
-  fineline:{name:'Fine line',hint:'Só as linhas, traço de 1 px e pouco ruído.',v:{linesOn:true,detail:45,lineBlur:1.3,thick:1,clean:45,shadeOn:false}},
-  blackwork:{name:'Blackwork',hint:'Traço grosso, sombra mais escura em preenchimento sólido.',v:{linesOn:true,detail:30,lineBlur:2.4,thick:3,clean:70,shadeOn:true,shadeStyle:'solid',tones:2,cutoff:40,shadeBlur:4}},
-  pontos:{name:'Pontilhismo',hint:'Sombra em pontos, mais densos onde a foto é mais escura.',v:{linesOn:true,detail:40,lineBlur:1.6,thick:1.4,clean:40,shadeOn:true,shadeStyle:'dots',tones:2,cutoff:62,shadeBlur:2}}
+  realismo:{name:t('p_realismo'),hint:t('ph_realismo'),v:{linesOn:true,detail:50,lineBlur:1.6,thick:1.2,clean:30,shadeOn:true,shadeStyle:'hatch',tones:3,cutoff:55,shadeBlur:3}},
+  fineline:{name:'Fine line',hint:t('ph_fineline'),v:{linesOn:true,detail:45,lineBlur:1.3,thick:1,clean:45,shadeOn:false}},
+  blackwork:{name:'Blackwork',hint:t('ph_blackwork'),v:{linesOn:true,detail:30,lineBlur:2.4,thick:3,clean:70,shadeOn:true,shadeStyle:'solid',tones:2,cutoff:40,shadeBlur:4}},
+  pontos:{name:t('p_pontos'),hint:t('ph_pontos'),v:{linesOn:true,detail:40,lineBlur:1.6,thick:1.4,clean:40,shadeOn:true,shadeStyle:'dots',tones:2,cutoff:62,shadeBlur:2}}
 };
 const SLIDERS={
   rowsLines:[
-    {k:'detail',l:'Detalhe',min:0,max:100,step:1,f:v=>v+'%'},
-    {k:'lineBlur',l:'Suavizar foto',min:0.5,max:5,step:0.1,f:v=>v.toFixed(1)},
-    {k:'thick',l:'Espessura',min:1,max:6,step:0.1,f:v=>v.toFixed(1)+' px'},
-    {k:'clean',l:'Ignorar traços curtos',min:0,max:200,step:5,f:v=>v+' px'}],
+    {k:'detail',l:t('s_detail'),min:0,max:100,step:1,f:v=>v+'%'},
+    {k:'lineBlur',l:t('s_lineBlur'),min:0.5,max:5,step:0.1,f:v=>v.toFixed(1)},
+    {k:'thick',l:t('s_thick'),min:1,max:6,step:0.1,f:v=>v.toFixed(1)+' px'},
+    {k:'clean',l:t('s_clean'),min:0,max:200,step:5,f:v=>v+' px'}],
   rowsShade:[
-    {k:'tones',l:'Tons',min:1,max:3,step:1,f:v=>v},
-    {k:'cutoff',l:'Onde começa a sombra',min:10,max:90,step:1,f:v=>v+'%'},
-    {k:'shadeBlur',l:'Suavizar zonas',min:0.5,max:10,step:0.5,f:v=>v.toFixed(1)}],
+    {k:'tones',l:t('s_tones'),min:1,max:3,step:1,f:v=>v},
+    {k:'cutoff',l:t('s_cutoff'),min:10,max:90,step:1,f:v=>v+'%'},
+    {k:'shadeBlur',l:t('s_shadeBlur'),min:0.5,max:10,step:0.5,f:v=>v.toFixed(1)}],
   rowsPhoto:[
-    {k:'bright',l:'Brilho',min:-50,max:50,step:1,f:v=>(v>0?'+':'')+v},
-    {k:'contrast',l:'Contraste',min:50,max:220,step:1,f:v=>v+'%'}]
+    {k:'bright',l:t('s_bright'),min:-50,max:50,step:1,f:v=>(v>0?'+':'')+v},
+    {k:'contrast',l:t('s_contrast'),min:50,max:220,step:1,f:v=>v+'%'}]
 };
 const SEGS={
-  viewSeg:{k:'view',o:[['stencil','Stencil'],['original','Original'],['overlay','Sobrepor']],render:true},
+  viewSeg:{k:'view',o:[['stencil','Stencil'],['original','Original'],['overlay',t('v_overlay')]],render:true},
   presetSeg:{k:'preset',o:Object.entries(PRESETS).map(([k,p])=>[k,p.name])},
-  styleSeg:{k:'shadeStyle',o:[['outline','Tracejado'],['hatch','Hachura'],['dots','Pontos'],['solid','Sólido']]},
-  resSeg:{k:'res',o:[[900,'Rápida'],[1400,'Alta'],[2200,'Impressão']]},
-  inkSeg:{k:'ink',o:[['black','Preto'],['violet','Violeta']]}
+  styleSeg:{k:'shadeStyle',o:[['outline',t('st_outline')],['hatch',t('st_hatch')],['dots',t('st_dots')],['solid',t('st_solid')]]},
+  resSeg:{k:'res',o:[[900,t('r_fast')],[1400,t('r_high')],[2200,t('r_print')]]},
+  inkSeg:{k:'ink',o:[['black',t('i_black')],['violet',t('i_violet')]]}
 };
 
 /* ---------- UI ---------- */
@@ -285,16 +301,16 @@ function syncUI(){
   for(const id in SEGS)syncSeg(id);
   linesOn.checked=S.linesOn;shadeOn.checked=S.shadeOn;mirror.checked=S.mirror;
   $('#gLines').classList.toggle('off',!S.linesOn);$('#gShade').classList.toggle('off',!S.shadeOn);
-  $('#presetHint').textContent=S.preset?PRESETS[S.preset].hint:'Ajustes personalizados.';
+  $('#presetHint').textContent=S.preset?PRESETS[S.preset].hint:t('custom');
 }
 function applyPreset(k){Object.assign(S,PRESETS[k].v);S.preset=k;syncUI();schedule();}
-function custom(){if(S.preset){S.preset=null;syncSeg('presetSeg');$('#presetHint').textContent='Ajustes personalizados.';}}
+function custom(){if(S.preset){S.preset=null;syncSeg('presetSeg');$('#presetHint').textContent=t('custom');}}
 
 let toastT;
 function toast(msg,ms=2800){const t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,ms);}
 
 /* ---------- Source ---------- */
-let src=null,srcName='Exemplo',srcId=0,isSample=true;
+let src=null,srcName=t('badge'),srcId=0,isSample=true;
 function sample(){
   const c=document.createElement('canvas');c.width=1000;c.height=1200;const x=c.getContext('2d');
   let g=x.createLinearGradient(0,0,0,760);g.addColorStop(0,'#e6e1d8');g.addColorStop(1,'#bdb5a8');x.fillStyle=g;x.fillRect(0,0,1000,760);
@@ -320,10 +336,10 @@ function decode(f){return new Promise((res,rej)=>{
   url?tryImg(url,viaReader):viaReader();});}
 async function loadFile(f){
   if(!f)return;
-  if(f.type&&!f.type.startsWith('image/')){toast('Esse arquivo não é uma imagem. Use JPG, PNG ou WEBP.');return;}
-  toast('Abrindo foto…',10000);
-  try{const im=await decode(f);setSource(im,f.name||'Foto',false);toast('Foto carregada.');}
-  catch(e){toast(/hei[cf]/i.test((f.type||'')+(f.name||''))?'Fotos HEIC não abrem aqui. No iPhone, use Câmera › Formatos › Mais compatível, ou envie a foto como JPG.':'Não consegui abrir essa imagem. Exporte como JPG e tente de novo.',7000);}
+  if(f.type&&!f.type.startsWith('image/')){toast(t('t_notimg'));return;}
+  toast(t('t_opening'),10000);
+  try{const im=await decode(f);setSource(im,f.name||t('photo'),false);toast(t('t_loaded'));}
+  catch(e){toast(/hei[cf]/i.test((f.type||'')+(f.name||''))?t('t_heic'):t('t_cantopen'),7000);}
 }
 $('#file').addEventListener('change',e=>{loadFile(e.target.files[0]);e.target.value='';});
 const stage=$('#stage');
@@ -339,9 +355,9 @@ window.addEventListener('paste',e=>{
 const pb=document.getElementById('pastebox');
 function checkPasteImg(){
   const img=pb.querySelector('img');pb.innerHTML='';
-  if(!img){toast('Nenhuma imagem na área de transferência. Copie a foto primeiro.',4000);return;}
-  const use=()=>{try{const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);setSource(c,'Foto colada',false);toast('Foto carregada.');}catch(err){toast('Não consegui ler a foto colada.',4000);}};
-  if(img.complete&&img.naturalWidth)use();else{img.onload=use;img.onerror=()=>toast('Não consegui ler a foto colada.',4000);}
+  if(!img){toast(t('t_noclip'),4000);return;}
+  const use=()=>{try{const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);setSource(c,t('pasted'),false);toast(t('t_loaded'));}catch(err){toast(t('t_cantpaste'),4000);}};
+  if(img.complete&&img.naturalWidth)use();else{img.onload=use;img.onerror=()=>toast(t('t_cantpaste'),4000);}
 }
 pb.addEventListener('input',()=>setTimeout(checkPasteImg,50));
 pb.addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey))e.preventDefault();});
@@ -472,12 +488,12 @@ function render(){
     x.drawImage(stCv,0,0);}
   x.restore();
   const cm=v=>(v/300*2.54).toFixed(1);
-  $('#meta').textContent=`${srcName} · ${W} × ${H} px · ${cm(W)} × ${cm(H)} cm a 300 dpi`;
+  $('#meta').textContent=`${srcName} · ${W} × ${H} px · ${cm(W)} × ${cm(H)} ${t('meta_dpi')}`;
 }
 let timer=null;
 function schedule(){
   if(!src)return;clearTimeout(timer);$('#busy').hidden=false;
-  timer=setTimeout(()=>{requestAnimationFrame(()=>{try{process();}catch(err){console.error(err);toast('Algo falhou no processamento. Tente a resolução Rápida.');}
+  timer=setTimeout(()=>{requestAnimationFrame(()=>{try{process();}catch(err){console.error(err);toast(t('t_procfail'));}
     $('#busy').hidden=true;});},90);
 }
 
@@ -503,27 +519,16 @@ $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')$('#modal').hi
 
 
 /* ---------- IA (último recurso) ---------- */
-const AI_CHIPS=[
- ['escamas','Escamas',"Desenhe o contorno de cada escama individualmente, em padrão sobreposto e regular que acompanha a curvatura do corpo e diminui de tamanho nas extremidades, inclusive nas partes onde a foto não mostra bem."],
- ['cabelo','Cabelo',"Separe o cabelo em mechas com linhas fluidas e contínuas, sem riscos soltos."],
- ['rosto','Rosto',"Rosto com traços nítidos e anatomicamente corretos: olhos, sobrancelhas, nariz, boca e contorno bem definidos, sem mudar a expressão."],
- ['maos','Mãos',"Mãos e dedos com anatomia correta e contornos claros."],
- ['ornamentos','Ornamentos',"Ornamentos, joias e padrões com linhas precisas e simétricas."],
- ['agua','Água / fundo',"Ondas, bolhas e elementos de fundo simplificados em linhas limpas."],
- ['contorno','Só contorno',"Use apenas linhas de contorno, sem nenhuma hachura ou preenchimento."]
-];
+const AI_CHIPS=['escamas','cabelo','rosto','maos','ornamentos','agua','contorno'].map(k=>[k,t('c_'+k),t('ct_'+k)]);
 const aiSel=new Set(['escamas','contorno']);
 const aiBox=document.getElementById('aiChips');
 for(const [k,l] of AI_CHIPS){const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=l;b.dataset.k=k;
   b.addEventListener('click',()=>{aiSel.has(k)?aiSel.delete(k):aiSel.add(k);aiSync();});aiBox.appendChild(b);}
 function aiPrompt(){
-  const parts=["Redesenhe esta imagem como line art para stencil de tatuagem.",
-   "Fundo branco puro e apenas linhas pretas finas, limpas, contínuas e fechadas. Sem cinza, sem degradê, sem textura de foto.",
-   "Mantenha exatamente a mesma composição, pose, proporções e enquadramento da foto. Não corte a imagem e não acrescente elementos novos.",
-   "Nas áreas borradas, apagadas ou escuras, reconstrua os detalhes de forma coerente com o resto do desenho."];
+  const parts=[t('pr1'),t('pr2'),t('pr3'),t('pr4')];
   for(const [k,,t] of AI_CHIPS)if(aiSel.has(k))parts.push(t);
   const ex=document.getElementById('aiExtra').value.trim();if(ex)parts.push(ex);
-  parts.push("Desenho inteiro, sem moldura, sem texto, sem assinatura e sem marca d'água. Saída em alta resolução.");
+  parts.push(t('pr5'));
   return parts.join('\n');
 }
 function aiSync(){for(const b of aiBox.children)b.setAttribute('aria-pressed',String(aiSel.has(b.dataset.k)));document.getElementById('aiPrompt').textContent=aiPrompt();}
@@ -531,17 +536,17 @@ document.getElementById('aiExtra').addEventListener('input',aiSync);
 aiSync();
 document.getElementById('aiGo').addEventListener('click',()=>{
   const p=aiPrompt();
-  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(p).then(()=>toast('Pedido copiado. Agora anexe a foto no Gemini e cole.',5000)).catch(()=>toast('Não consegui copiar. Abra “Ver o pedido” e copie manualmente.',6000));}
-  else toast('Abra “Ver o pedido” e copie manualmente.',6000);
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(p).then(()=>toast(t('t_copied'),5000)).catch(()=>toast(t('t_copyfail'),6000));}
+  else toast(t('t_copymanual'),6000);
 });
 document.getElementById('aiFile').addEventListener('change',async e=>{
   const f=e.target.files[0];e.target.value='';if(!f)return;
   await loadFile(f);applyPreset('fineline');S.clean=10;S.detail=60;syncUI();schedule();
-  toast('Resultado da IA carregado no modo Fine line. Ajuste o Detalhe se faltar alguma linha.',6000);
+  toast(t('t_aiLoaded'),6000);
 });
 
 syncUI();
-setSource(sample(),'Exemplo',true);
+setSource(sample(),t('badge'),true);
 })();
 </script>
 <script>if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}</script>
